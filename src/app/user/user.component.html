@@ -1,0 +1,60 @@
+<div class="container"> 
+    <form [formGroup]="form" (ngSubmit)="signUp()">
+      <div *ngIf="form.errors" class="alert alert-danger">Invalid data is submiited</div>
+        <div class="form-group row">
+            <label for="fullName" class="col-sm-2 col-form-label">Full Name</label>
+            <div class="col-sm-10">
+              <input formControlName="fullname" type="text" class="form-control" id="fullName" placeholder="Fullname">
+              <div *ngIf="fullname.touched && fullname.invalid" class="alert alert-danger">
+                  <div *ngIf="fullname.errors.required">Full Name is Required</div>
+                  <div *ngIf="fullname.errors.minlength">Full Name should be minimum of {{ fullname.errors.minlength.requiredLength }} length</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="username" class="col-sm-2 col-form-label">Username</label>
+            <div class="col-sm-10">
+              <input formControlName="username" type="text" class="form-control" id="username" placeholder="username">
+              <div *ngIf="username.touched && username.invalid" class="alert alert-danger">
+                  <div *ngIf="username.errors.required">username is Required</div>
+                  <div *ngIf="username.errors.minlength">username should be minimum of {{ username.errors.minlength.requiredLength }} length</div>
+                  <div *ngIf="username.errors.cantspace">username cant contain space</div>
+                  <div *ngIf="username.errors.shouldBeUnique">username should be unique</div>
+              </div>
+            </div>
+          </div>
+        <div class="form-group row">
+            <label for="email" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+              <input formControlName="email" type="email" class="form-control" id="email" placeholder="Email">
+              <div *ngIf="email.touched && email.invalid" class="alert alert-danger">
+                <div *ngIf="email.errors.required">Email is Required</div>
+                <div *ngIf="email.errors.email">Email is not valid</div>
+            </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="password" class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10">
+              <input formControlName="password" type="password" class="form-control" id="password" placeholder="Password">
+              <div *ngIf="password.touched && password.invalid" class="alert alert-danger">
+                <div *ngIf="password.errors.required">Password is Required</div>
+                <div *ngIf="password.errors.minlength">Password should be minimum of {{ password.errors.minlength.requiredLength }} length</div>
+            </div>
+            </div> 
+          </div>
+         
+
+      <button [disabled]="form.invalid" type="submit" class="btn btn-primary">Sign up</button>
+    </form>
+
+      <br/><br/>
+      <div class="row">
+        <ul>
+          <li class="list-group-item" *ngFor="let user of users">{{user.name}}</li>
+        </ul>
+      </div>
+
+  </div>
+
+ 
