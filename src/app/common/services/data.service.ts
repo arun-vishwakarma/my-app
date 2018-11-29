@@ -10,4 +10,10 @@ export class DataService{
     createUser(postData){
         return this.http.post(this.url,postData);
     }
+
+    loginUser(postData){
+        console.log(postData);
+        //return false;
+        return this.http.post(this.url,postData);
+    }
 }

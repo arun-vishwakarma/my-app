@@ -14,6 +14,9 @@ export class UserComponent implements OnInit {
 
    users:any;
 
+   userCreated = false;
+   msg:string;
+
   /*Notes: below (FormGroup/FormControl) can be replace with FormBuilder for large and 
   complex form to make it more shorter, and also use nested FormGroup*/
   form = new FormGroup({
@@ -52,7 +55,7 @@ export class UserComponent implements OnInit {
   }
 
   signUp(){
-    console.log(this.form.value);
+    //console.log(this.form.value);
     let postData = {
       fullname:this.form.value.fullname,
       email:this.form.value.email,
@@ -63,7 +66,10 @@ export class UserComponent implements OnInit {
 
     this.service.createUser(postData)
              .subscribe(response=>{
-               console.log(response);
+               //console.log(response.json());
+               this.msg = response.json().message;
+               this.userCreated = true;
+               this.hideMsg();
              });
 
     /*let valid = null;
@@ -73,6 +79,15 @@ export class UserComponent implements OnInit {
       });
     }*/
   }
+
+  //hide mesage after some delay
+  hideMsg(){
+    setTimeout(()=>{
+      this.userCreated = false;
+    },5000);
+  }
+
+
 
   //get form control name
   get fullname(){  return this.form.get('fullname');  }

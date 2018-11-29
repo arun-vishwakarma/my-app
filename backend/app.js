@@ -11,7 +11,8 @@ const app = express();
 app.use(express.json()); //body parser
 
 app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Origin", "*");    
+    //res.setHeader("Access-Control-Allow-Credentials", true);
     res.setHeader(
       "Access-Control-Allow-Headers",
       "Origin, X-Requested-With, Content-Type, Accept"
@@ -55,6 +56,29 @@ app.post('/api/users', (req, res, next) => {
           userId: createdUser._id
         });
     });
+});
+
+
+app.post('/api/login', async (req, res) => {
+    const userdata = req.body;  //using body parser
+    console.log('login data',userdata);  
+    //return false;
+    let user = await User.findOne({
+        $or: [
+            { username : userdata.username },
+            { email : userdata.username }
+        ]
+    });
+
+    console.log('fetch data',user);    
+
+    //working on error message to send back to client
+    if(!user) return res.status(400).send('Invalid username or password!');
+    //need to replace with bcrypt hash and salt method
+    if(user.password!==userdata.password){
+        return res.status(400).send('Invalid username or password!');
+    }
+    res.send(true);
 });
 
 module.exports = app;
