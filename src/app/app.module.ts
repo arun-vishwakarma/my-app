@@ -9,6 +9,7 @@ import { HttpModule } from '@angular/http';
 import { HomeComponent } from './home/home.component';
 import {Routes, RouterModule} from '@angular/router';
 import { LoginComponent } from './login/login.component';
+import { HeaderComponent } from './header/header.component';
 
 const routes: Routes = [
   {path:'', component: HomeComponent},
@@ -22,7 +23,8 @@ const routes: Routes = [
     AppComponent,
     UserComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

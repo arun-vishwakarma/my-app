@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require("mongoose");
 const User = require('./models/user');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 mongoose.connect('mongodb://localhost/practice_myapp',{ useNewUrlParser: true })
     .then(()=>console.log('Connected to mongodb'))
@@ -36,26 +38,31 @@ app.post('/api/users', (req, res, next) => {
     const userdata = req.body;  //using body parser
     console.log('post data',userdata);
   
-    const user = new User({
-        fullname:userdata.fullname,
-        email:userdata.email,
-        username:userdata.username,
-        password:userdata.password,
-        date:{type:Date,default:Date.now},
-        status:true
+    bcrypt.hash(userdata.password,10).
+        then(hash=>{
+            const user = new User({
+                fullname:userdata.fullname,
+                email:userdata.email,
+                username:userdata.username,
+                password:hash,
+                date:{type:Date,default:Date.now},
+                status:true
+            });   
+            
+            user.save().then(createdUser => {
+                res.status(201).json({
+                  message: "User added successfully",
+                  userId: createdUser._id
+                });
+            });
     });
-
+    
      /*user.save();
     res.status(200).json({
         message:"User added successfully!"
     });*/
 
-    user.save().then(createdUser => {
-        res.status(201).json({
-          message: "User added successfully",
-          userId: createdUser._id
-        });
-    });
+    
 });
 
 
@@ -75,9 +82,15 @@ app.post('/api/login', async (req, res) => {
     //working on error message to send back to client
     if(!user) return res.status(400).send('Invalid username or password!');
     //need to replace with bcrypt hash and salt method
-    if(user.password!==userdata.password){
+
+    let passwordIsOk = await bcrypt.compare(userdata.password,user.password);
+    console.log('passwordIsOk',passwordIsOk);  
+
+    if(!passwordIsOk){
         return res.status(400).send('Invalid username or password!');
     }
+
+
     res.send(true);
 });
 
