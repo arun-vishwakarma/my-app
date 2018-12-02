@@ -12,10 +12,12 @@ import { LoginService } from '../common/services/login.service';
 })
 export class ChatComponent implements OnInit {
 
+  private loginUser : string;
+
   constructor(private userService:UserService, private _chatService:ChatService, private loginService:LoginService) {
-      const loginUser = this.loginService.getAuthUser();
-      console.log('login user ',loginUser);
-      this.join(loginUser);
+      this.loginUser = this.loginService.getAuthUser();
+      console.log('login user ',this.loginUser);
+      this.join(this.loginUser);
   }
 
   users:any;
@@ -23,8 +25,10 @@ export class ChatComponent implements OnInit {
   ngOnInit() {
     this.userService.getUser()
      .subscribe(respUsers=>{
-       console.log('all users data', respUsers);
-       this.users = respUsers;
+       console.log('all users data', respUsers); 
+       let loginUserValue =  this.loginUser;
+       //this.users = respUsers;
+       this.users = respUsers.filter(function(el) { return el.email != loginUserValue; });  //remove login user
      })
   }
 

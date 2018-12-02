@@ -9,7 +9,7 @@ export class DataService{
 
     getUser(){
         //return this.http.get('https://jsonplaceholder.typicode.com/users'); //dummy/static for now
-        return this.http.get(this.url);
+        return this.http.get<Array<{_id: string, fullname: string,email:string, username:string,password:string}>>(this.url);
     }
     
     createUser(postData){
@@ -19,6 +19,6 @@ export class DataService{
     loginUser(postData){
         console.log(postData);
         //return false;
-        return this.http.post<{token:string, expiresIn:number}>(this.url,postData);
+        return this.http.post<{token:string, expiresIn:number, email:string}>(this.url,postData);
     }
 }
