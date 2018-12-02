@@ -13,11 +13,13 @@ import { LoginService } from '../common/services/login.service';
 export class ChatComponent implements OnInit {
 
   private loginUser : string;
+  allLoginUsers: any[] = [];
 
   constructor(private userService:UserService, private _chatService:ChatService, private loginService:LoginService) {
       this.loginUser = this.loginService.getAuthUser();
       console.log('login user ',this.loginUser);
-      this.join(this.loginUser);
+      this.join();
+      //this.allLoginUsers.push(this.loginUser);  //need to do other things to get all login users using node
   }
 
   users:any;
@@ -32,9 +34,9 @@ export class ChatComponent implements OnInit {
      })
   }
 
-  join(loginUser){
+  join(){
     //console.log('User email..',loginUser);
-    this._chatService.joinChat({email:loginUser});
+    this._chatService.joinChat({email:this.loginUser});
   }
 
   startChat(user){

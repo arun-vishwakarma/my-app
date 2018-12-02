@@ -1,5 +1,5 @@
 import { Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+//import {Observable} from 'rxjs/Observable';
 
 import * as io from 'socket.io-client';
 
@@ -10,5 +10,8 @@ export class ChatService{
     joinChat(data){
         this.socket.emit('join',data);
     }
+
+    //need to leave chat after logout
+    
 }
 

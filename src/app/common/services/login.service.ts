@@ -48,6 +48,7 @@ export class LoginService extends DataService{
         const token = response.token;
         console.log('token ',response.token);
         this.token = token;
+        this.authUser = response.email;
         if (token) {
           const expiresInDuration = response.expiresIn;
           this.setAuthTimer(expiresInDuration);
