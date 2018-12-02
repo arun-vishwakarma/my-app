@@ -27,6 +27,8 @@
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.3.9",
     "rxjs": "~6.3.3",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
@@ -34,9 +36,9 @@
     "@angular/cli": "~7.0.4",
     "@angular/compiler-cli": "~7.0.0",
     "@angular/language-service": "~7.0.0",
-    "@types/node": "~8.9.4",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -45,6 +47,7 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "nodemon": "^1.18.7",
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",

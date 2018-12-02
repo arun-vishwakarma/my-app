@@ -10,11 +10,17 @@ import { HomeComponent } from './home/home.component';
 import {Routes, RouterModule} from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { HeaderComponent } from './header/header.component';
+import { ChatComponent } from './chat/chat.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from './common/services/auth-interceptor';
+import { AuthGuard } from './common/services/auth-guard';
+//import { IsLoggedIn } from './common/services/is-login';
 
 const routes: Routes = [
-  {path:'', component: HomeComponent},
+  {path:'',component: HomeComponent},
   {path:'login',  component: LoginComponent},
-  {path:'register', component : UserComponent}
+  {path:'register', component : UserComponent},
+  {path:'chat', component : ChatComponent, canActivate:[AuthGuard]}
 ];
 
 
@@ -24,7 +30,8 @@ const routes: Routes = [
     UserComponent,
     HomeComponent,
     LoginComponent,
-    HeaderComponent
+    HeaderComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -32,10 +39,11 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
+    HttpClientModule,
     RouterModule.forRoot(routes)
 
   ],
-  providers: [],
+  providers: [{provide:HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi:true},AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

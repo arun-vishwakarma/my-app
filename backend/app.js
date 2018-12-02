@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const User = require('./models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const checkAuth = require('./middleware/auth-check');
 
 mongoose.connect('mongodb://localhost/practice_myapp',{ useNewUrlParser: true })
     .then(()=>console.log('Connected to mongodb'))
@@ -17,7 +18,7 @@ app.use((req, res, next) => {
     //res.setHeader("Access-Control-Allow-Credentials", true);
     res.setHeader(
       "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
+      "Origin, X-Requested-With, Content-Type, Accept, Authorization"
     );
     res.setHeader(
       "Access-Control-Allow-Methods",
@@ -28,15 +29,15 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-/*app.get('/api/users', (req, res) => {
-    res.send('Api call');
-    console.log(req);
-
-});*/
+app.get('/api/users',checkAuth, async (req, res) => {
+    let users = await User.find();
+    //console.log('all users',users);
+    res.status(201).json(users);
+});
 
 app.post('/api/users', (req, res, next) => {
-    const userdata = req.body;  //using body parser
-    console.log('post data',userdata);
+    const userdata = req.body; 
+    //console.log('post data',userdata);
   
     bcrypt.hash(userdata.password,10).
         then(hash=>{
@@ -68,7 +69,7 @@ app.post('/api/users', (req, res, next) => {
 
 app.post('/api/login', async (req, res) => {
     const userdata = req.body;  //using body parser
-    console.log('login data',userdata);  
+    //console.log('login data',userdata);  
     //return false;
     let user = await User.findOne({
         $or: [
@@ -77,7 +78,7 @@ app.post('/api/login', async (req, res) => {
         ]
     });
 
-    console.log('fetch data',user);    
+    //console.log('fetch data',user);    
 
     //working on error message to send back to client
     if(!user) return res.status(400).send('Invalid username or password!');
@@ -90,8 +91,24 @@ app.post('/api/login', async (req, res) => {
         return res.status(400).send('Invalid username or password!');
     }
 
+    const token = jwt.sign(
+            {email:user.email, userId:user._id},
+            'AKV_LONG_WEB_TOKEN_KEY',
+            {expiresIn:'1h'}
+        );
 
-    res.send(true);
+
+    /*res.status(200).send({
+        token:token,
+        expiresIn:'3600'
+    });*/
+
+    res.status(200).json({
+        email:user.email,
+        token:token,
+        expiresIn:'3600'
+    });
+
 });
 
 module.exports = app;

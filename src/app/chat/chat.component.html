@@ -1,0 +1,6 @@
+<ul class="list-group">
+  <li *ngFor="let user of users" class="list-group-item d-flex justify-content-between align-items-center">
+     <span> {{user.fullname}} </span>     
+     <a class="badge badge-primary badge-pill" href="javascript:void(0);" (click)="startChat(user.email)">Satrt Chat</a>
+  </li>
+</ul>

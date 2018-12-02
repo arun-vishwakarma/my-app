@@ -41,12 +41,7 @@ export class UserComponent implements OnInit {
     ])
   });
  
-  constructor(private service: UserService) {   
-    this.service.getUser()
-      .subscribe(response=>{
-      //console.log(response);
-      this.users = response.json();
-    });
+  constructor(private service: UserService) {      
       //let us = new UserService();
       //console.log(us.test());
   }
@@ -66,8 +61,9 @@ export class UserComponent implements OnInit {
 
     this.service.createUser(postData)
              .subscribe(response=>{
-               //console.log(response.json());
-               this.msg = response.json().message;
+               console.log('user created ',response);
+               //this.msg = response.json().message;
+              this.msg = response.message;
                this.userCreated = true;
                this.hideMsg();
              });
@@ -86,8 +82,6 @@ export class UserComponent implements OnInit {
       this.userCreated = false;
     },5000);
   }
-
-
 
   //get form control name
   get fullname(){  return this.form.get('fullname');  }
