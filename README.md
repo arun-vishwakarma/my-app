@@ -1,4 +1,4 @@
-#How to run this code
+# Instruction to run this code
 
 Take all files from here make your own directory
 
@@ -8,7 +8,7 @@ myapp>npm install
 
 - Open another cmd and run mongod to start mongo db server
 
-- Then open another node shell and use command myapp>node server.js or npm run start:server (run nodemon in background)
+- Then open another node shell and use command myapp>node server.js or npm run start:server (run nodemon in background to always monitor and run node js code)
 
 - Finally run myapp>ng serve or ng serve --open to open the application i.e http://localhost:4200/
 
