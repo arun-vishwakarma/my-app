@@ -1,3 +1,19 @@
+#How to run this code
+
+Take all files from here make your own directory
+
+- Open CMD (or use visual studio code terminal) and run this command like your directory name is : myapp or whatever you made and run below command
+
+myapp>npm install
+
+- Open another cmd and run mongod to start mongo db server
+
+- Then open another node shell and use command myapp>node server.js or npm run start:server (run nodemon in background)
+
+- Finally run myapp>ng serve or ng serve --open to open the application i.e http://localhost:4200/
+
+This project was generated with Angular CLI version 7.1.0.
+
 # MyApp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.4.
