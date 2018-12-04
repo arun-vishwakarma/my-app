@@ -12,8 +12,6 @@ myapp>npm install
 
 - Finally run myapp>ng serve or ng serve --open to open the application i.e http://localhost:4200/
 
-This project was generated with Angular CLI version 7.1.0.
-
 # MyApp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.4.
