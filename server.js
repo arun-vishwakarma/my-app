@@ -11,10 +11,13 @@ const server = http.createServer(app);
 
 //socket stuffs
 const io = require('socket.io')(server);
+
 io.on('connection', (socket) => {
-    console.log('Client connected!');
+	
+    console.log('Client connected!'); //if client get connect with server socket io
 
     socket.on('join',function(clientData){
+		
         //joining
         socket.join('akv_chat');   //akv_chat as a chat room (currently use single/common room for all users)
 
