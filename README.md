@@ -2,9 +2,7 @@
 
 Take all files from here make your own directory
 
-- Open CMD (or use visual studio code terminal) and run this command like your directory name is : myapp or whatever you made and run below command
-
-myapp>npm install
+- Open CMD (or use visual studio code terminal) and run this command like your directory name is : myapp or whatever you made and run  command myapp>npm install  
 
 - Open another cmd and run mongod to start mongo db server
 
