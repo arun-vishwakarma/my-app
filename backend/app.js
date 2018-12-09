@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const checkAuth = require('./middleware/auth-check');
 
-mongoose.connect('mongodb://arun:arun01@ds031608.mlab.com:31608/meanapp',{ useNewUrlParser: true })
+mongoose.connect('mongodb://localhost/practice_myapp',{ useNewUrlParser: true })
     .then(()=>console.log('Connected to mongodb'))
     .catch(err => console.log('could not connect to mongodb',err));
 
