@@ -14,6 +14,11 @@ import { ChatComponent } from './chat/chat.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './common/services/auth-interceptor';
 import { AuthGuard } from './common/services/auth-guard';
+import { SafeHtmlPipe } from './common/pipes/safehtml.pipe';
+import { MyNgIfDirective } from './common/directives/my-ng-if.directive';
+import { ChatWidgetDirective } from './chat/chat-widget.directive';
+import { ChatboxComponent } from './chat/chatbox/chatbox.component';
+
 //import { IsLoggedIn } from './common/services/is-login';
 
 const routes: Routes = [
@@ -31,8 +36,13 @@ const routes: Routes = [
     HomeComponent,
     LoginComponent,
     HeaderComponent,
-    ChatComponent
+    ChatComponent,
+    SafeHtmlPipe,
+    MyNgIfDirective,
+    ChatWidgetDirective,
+    ChatboxComponent
   ],
+  entryComponents: [ChatboxComponent],
   imports: [
     BrowserModule,
     //AppRoutingModule,

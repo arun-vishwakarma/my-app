@@ -13,11 +13,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userIsAuthenticated = false;
   private authListenerSubs: Subscription;
 
+  loginUser: string = '';
+
   constructor(private loginService: LoginService) { }
 
   ngOnInit() {
 
     console.log('Header component');
+    
+    this.loginUser = this.loginService.getAuthUser();  //use here, if page reload and get login user if authenticated as below line describe also
 
     /*
       if page reload, before this component loaded
@@ -33,6 +37,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     .subscribe(isAuthenticated => {   //1st subscribe is must to get value using next as implemented in login/logout fn
       this.userIsAuthenticated = isAuthenticated;
       console.log('2nd get value after login or logout using next');
+
+      this.loginUser = this.loginService.getAuthUser(); //use to 1st time assign user same as userIsAuthenticated
     });
 
   }

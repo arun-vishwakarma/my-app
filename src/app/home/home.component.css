@@ -1,0 +1,6 @@
+.container {
+    max-width: 100%;
+    /* This will remove the outer padding, and push content edge to edge */
+    padding-right: 0;
+    padding-left: 0;
+  }

@@ -8,6 +8,9 @@
     <li class="nav-item" *ngIf="userIsAuthenticated">
       <a class="nav-link" routerLinkActive="active" routerLink="/chat">Chat</a>
     </li>
+    <li class="nav-item" *ngIf="userIsAuthenticated">
+      <span class="nav-link active">Hi {{this.loginUser}}!</span>
+    </li>
   </ul>
 
   <!-- Links -->
