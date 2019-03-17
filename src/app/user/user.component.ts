@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { SpaceValidators } from '../common/validators/Space.validators';
+import { SpaceValidators } from '../common/validators/space.validators';
 import { UniqueValidators } from '../common/validators/unique.validators';
 import { UserService } from '../common/services/user.service';
 
@@ -13,9 +13,10 @@ import { UserService } from '../common/services/user.service';
 export class UserComponent implements OnInit {
 
    users:any;
-
    userCreated = false;
    msg:string;
+
+   isLoading = false;
 
   /*Notes: below (FormGroup/FormControl) can be replace with FormBuilder for large and 
   complex form to make it more shorter, and also use nested FormGroup*/
@@ -29,28 +30,35 @@ export class UserComponent implements OnInit {
       Validators.minLength(4),
       SpaceValidators.cannotContainSpace       
     ],
-    UniqueValidators.shouldBeUnique
+    UniqueValidators.shouldBeUnique(this.service)
     ),   
     email : new FormControl('',[
       Validators.required,
       Validators.email
-    ]),  //first parameter use for default value
+    ],
+    UniqueValidators.shouldBeUnique(this.service)
+    ),  //first parameter use for default value
     password: new FormControl('',[
       Validators.required,
       Validators.minLength(6)
     ])
   });
- 
+
   constructor(private service: UserService) {      
       //let us = new UserService();
       //console.log(us.test());
   }
 
-   ngOnInit() {
+  ngOnInit() {
   }
-
+ 
   signUp(){
-    //console.log(this.form.value);
+
+    // stop here if form is invalid
+    if (this.form.invalid) {
+      return;
+    }
+    console.log(this.form.value);
     let postData = {
       fullname:this.form.value.fullname,
       email:this.form.value.email,
@@ -58,14 +66,19 @@ export class UserComponent implements OnInit {
       password:this.form.value.password   
     };
     
+    //loading like ajax
+    this.isLoading = true;
+    this.form.reset(); //reset form after get values
 
-    this.service.createUser(postData)
+    this.service.create(postData)
              .subscribe(response=>{
                console.log('user created ',response);
                //this.msg = response.json().message;
-              this.msg = response.message;
+               this.msg = response.message;
                this.userCreated = true;
                this.hideMsg();
+               this.isLoading = false;
+               //this.form.reset(); //reset form after get values
              });
 
     /*let valid = null;

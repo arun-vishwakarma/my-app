@@ -35,9 +35,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.authListenerSubs = this.loginService
     .getAuthStatusListener()
     .subscribe(isAuthenticated => {   //1st subscribe is must to get value using next as implemented in login/logout fn
+      
       this.userIsAuthenticated = isAuthenticated;
-      console.log('2nd get value after login or logout using next');
 
+      //authStatusListener used as any type instaed of boolean
+      /*
+      if(isAuthenticated===true)
+          this.userIsAuthenticated = isAuthenticated;
+      else
+        this.userIsAuthenticated = false; 
+      */  
+
+      console.log('2nd get value after login or logout using next');
+      
       this.loginUser = this.loginService.getAuthUser(); //use to 1st time assign user same as userIsAuthenticated
     });
 

@@ -42,6 +42,10 @@ const routes: Routes = [
     ChatWidgetDirective,
     ChatboxComponent
   ],
+  /*
+	The entryComponents array is used to define only components that are not found in html and created dynamically with ComponentFactoryResolver. 
+	Angular needs this hint to find them and compile. All other components should just be listed in the declarations array
+  */
   entryComponents: [ChatboxComponent],
   imports: [
     BrowserModule,

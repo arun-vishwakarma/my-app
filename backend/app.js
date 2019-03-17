@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const checkAuth = require('./middleware/auth-check');
 
-mongoose.connect('mongodb://localhost/practice_myapp',{ useNewUrlParser: true })
+mongoose.connect('mongodb://localhost:27017/practice_myapp',{ useNewUrlParser: true })
     .then(()=>console.log('Connected to mongodb'))
     .catch(err => console.log('could not connect to mongodb',err));
 
@@ -33,6 +33,29 @@ app.get('/api/users',checkAuth, async (req, res) => {
     let users = await User.find();
     //console.log('all users',users);
     res.status(201).json(users);
+});
+
+app.get('/api/users/:username', async (req, res) => {
+    try{
+        const userdata = req.params;
+
+        let user = await User.findOne({
+            $or: [
+                { username : userdata.username },
+                { email : userdata.username }
+            ]
+        }); 
+        
+        console.log('get user by ',user);
+        res.status(201).json(user);
+
+    }catch(error){
+        console.error('catch error',error);
+        //catch block execute if any technical problem e.g data not saved or fetched etc
+        res.status(500).json({
+            message: "Error occured!"
+          });
+    }
 });
 
 app.post('/api/users', (req, res, next) => {
@@ -68,46 +91,70 @@ app.post('/api/users', (req, res, next) => {
 
 
 app.post('/api/login', async (req, res) => {
-    const userdata = req.body;  //using body parser
-    //console.log('login data',userdata);  
-    //return false;
-    let user = await User.findOne({
-        $or: [
-            { username : userdata.username },
-            { email : userdata.username }
-        ]
-    });
 
-    //console.log('fetch data',user);    
+    try{
+            console.log('login');
+            
+            const userdata = req.body;  //using body parser
+            //console.log('login data',userdata);  
+            //return false;
+            let user = await User.findOne({
+                $or: [
+                    { username : userdata.username },
+                    { email : userdata.username }
+                ]
+            });
 
-    //working on error message to send back to client
-    if(!user) return res.status(400).send('Invalid username or password!');
-    //need to replace with bcrypt hash and salt method
+            //console.log('fetch data',user);    
+            //working on error message to send back to client
+            if(!user) {
+                return res.status(401).json({
+                    message: "Authentication failed!"
+                });
+                    
+                //throw new Error('Auth Login failed!');  //here it should not use
+            }
+            
 
-    let passwordIsOk = await bcrypt.compare(userdata.password,user.password);
-    console.log('passwordIsOk',passwordIsOk);  
+            let passwordIsOk = await bcrypt.compare(userdata.password,user.password);
+            console.log('passwordIsOk',passwordIsOk);  
 
-    if(!passwordIsOk){
-        return res.status(400).send('Invalid username or password!');
-    }
+            /*
+            if(!passwordIsOk){
+                return res.status(400).send('Invalid username or password!');
+            }*/
+            if(!passwordIsOk){
+                return res.status(401).json({
+                    message: "Authentication failed!"
+                });
+            }
 
-    const token = jwt.sign(
-            {email:user.email, userId:user._id},
-            'AKV_LONG_WEB_TOKEN_KEY',
-            {expiresIn:'1h'}
-        );
+
+            const token = jwt.sign(
+                    {email:user.email, userId:user._id},
+                    'AKV_LONG_WEB_TOKEN_KEY',
+                    {expiresIn:'1h'}
+                );
 
 
-    /*res.status(200).send({
-        token:token,
-        expiresIn:'3600'
-    });*/
+            /*res.status(200).send({
+                token:token,
+                expiresIn:'3600'
+            });*/
 
-    res.status(200).json({
-        email:user.email,
-        token:token,
-        expiresIn:'3600'
-    });
+            res.status(200).json({
+                email:user.email,
+                token:token,
+                expiresIn:'3600'
+            });
+
+        }catch(error){
+            console.error('catch error',error);
+            //catch block execute if any technical problem e.g data not saved or fetched etc
+            res.status(500).json({
+                message: "Could not login!"
+              });
+        }
 
 });
 

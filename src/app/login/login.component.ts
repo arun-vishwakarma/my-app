@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { SpaceValidators } from '../common/validators/Space.validators';
+import { SpaceValidators } from '../common/validators/space.validators';
 import { LoginService } from '../common/services/login.service';
+import { Subscription } from 'rxjs';
+
 //import { ActivatedRoute, Router } from '@angular/router';
 
 
@@ -10,9 +12,12 @@ import { LoginService } from '../common/services/login.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   
   isLogin: boolean;
+  errorMsg: string = '';
+
+  private authErrMsgSub : Subscription;
 
   form = new FormGroup({
 
@@ -51,7 +56,10 @@ export class LoginComponent implements OnInit {
   }*/
 
   ngOnInit(){
-
+      this.authErrMsgSub = this.loginService.getAuthErrorMsgListener().subscribe(loginErrMsg=>{
+          console.log('set error msg', loginErrMsg);
+          this.errorMsg = loginErrMsg;
+      });
   }
 
   signIn() {
@@ -63,12 +71,21 @@ export class LoginComponent implements OnInit {
 
 
     this.loginService.login(postData);
-      
+
+     /*
+    this.loginService.login(postData).subscribe(
+      resp => console.log(resp),
+      error => this.errorMsg = error
+    );*/
+
   }
 
   get username() { return this.form.get('username'); }
   get password() { return this.form.get('password'); }
 
 
+  ngOnDestroy(){
+    this.authErrMsgSub.unsubscribe();
+  }
 
 }

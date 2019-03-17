@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, OnChanges, ViewContainerRef,
-   ComponentFactoryResolver, Renderer2 } from '@angular/core';
+   ComponentFactoryResolver, Renderer2,ComponentRef } from '@angular/core';
 
 import { UserService } from '../common/services/user.service';
 import { ChatService} from './chat.service';
@@ -8,7 +8,6 @@ import { Subscription } from 'rxjs';
 import { ChatboxComponent } from './chatbox/chatbox.component';
 
 import * as $ from 'jquery';
-
 
 @Component({
   selector: 'app-chat',
@@ -19,6 +18,7 @@ import * as $ from 'jquery';
 export class ChatComponent implements OnChanges, OnInit, OnDestroy {
 
   @ViewChild('chatboxContainer', {read:ViewContainerRef}) container;
+  compRef:ComponentRef<any>;
 
   private loginUser : string;
   users:any;
@@ -43,36 +43,30 @@ export class ChatComponent implements OnChanges, OnInit, OnDestroy {
       
   }  
 
-  ngOnChanges() {
-    
+  ngOnChanges() {    
     console.log('chnge view');
-
   }
 
   ngOnInit() {
 
      //jQuery stuff but it should also replaced with angular
-     (function(cbu,removeUserfn,containerRef) {		
+     (function(cbu) {		
       $('#chat-box-template').on("click", ".live-chat header", function(e:Event) {
         e.preventDefault();
         $(this).next('.chat').slideToggle(300, 'swing');
         $(this).find('.chat-message-counter').fadeToggle(300, 'swing');
+
+        $(this).find('.chat-message-counter').text($(this).next().find('.chat-message').not('.white').length);
       });
-      $('#chat-box-template').on("click", ".chat-close", function(e:Event) {				
+     /* $('#chat-box-template').on("click", ".chat-close", function(e:Event) {				
         e.preventDefault();
         $(this).parent().parent('.live-chat').fadeOut(300);
-
-               
-          //remove user from open ChatBox list 
-          let removeUser = $(this).next().text();          
-          removeUserfn(cbu,removeUser,containerRef);  //cbu = this.openUserChatBox and removeUserfn = this.removeUseFromOpenChatBox, similary others
-         
-      });
-    })(this.openUserChatBox,this.removeUseFromOpenChatBox,this.container);
+      });*/
+    })(this.openUserChatBox);
 
 
     //need to unsubscribe
-    this.userService.getUser()
+    this.userService.getAll()
      .subscribe(respUsers=>{
        console.log('all users data', respUsers); 
        let loginUserValue =  this.loginUser;
@@ -96,7 +90,7 @@ export class ChatComponent implements OnChanges, OnInit, OnDestroy {
             this.allLoginUsers.push(data[key].user); 
         }
         console.log('cur login users ',this.allLoginUsers);
-      });      
+      });    
   }
 
   removeUseFromOpenChatBox(cbu:any,removeUser:string,containerRef:any){
@@ -134,25 +128,27 @@ export class ChatComponent implements OnChanges, OnInit, OnDestroy {
     console.log('open user chat box 1 ',this.openUserChatBox);
 
     //custom event in dynamic component
-    componentRef.instance.onSendMsg.subscribe((msgObj:any) => {
-    
+    componentRef.instance.onSendMsg.subscribe((msgObj:any) => {    
         this.sendMsg(msgObj.msg,msgObj.reciever,msgObj.sender);
-
       //msg get and put back to chat box componet  (here not needed becauz subscribe in chatbox component)
       //componentRef.instance.chatMsgs.push(msgObj);
     });
 
-    console.log('compRef ',componentRef);
+    //on close chat box 
+    componentRef.instance.onCloseChatBox.subscribe((reciever:string) => {    
+      this.closeChatBox(reciever);
+    });
 
-    console.log('this.container.length ',this.container.length);
-
+    console.log('compRef1 ',componentRef);    
+    
     //render multi chat box
-    let view = componentRef.hostView;
+    let view = componentRef.hostView;  //but this.compRef.hostView not read property rootNodes
     let chatWidgetLength = 0;  
     console.log('online users ',this.onlineUsers);
 
       if(this.container.length > 1){        
           chatWidgetLength = this.container.length;
+          //need to make it more flexible
           if(chatWidgetLength >= 6){
               chatWidgetLength = 5;
             }	
@@ -166,7 +162,10 @@ export class ChatComponent implements OnChanges, OnInit, OnDestroy {
           'right',
           rightCss+'px'
         );
-     }        
+     } 
+
+     this.compRef = componentRef;
+    
   }
 
  
@@ -175,9 +174,19 @@ export class ChatComponent implements OnChanges, OnInit, OnDestroy {
     this._chatService.sendMsg(msg,reciever,sender);
   }
 
+  closeChatBox(removeUser:string){
+    let index = this.openUserChatBox.indexOf(removeUser);
+    if (index > -1) {
+      this.openUserChatBox.splice(index, 1); 
+      this.compRef.destroy(); 
+    }
+  }
+
+  
+
 
   getOnlineUserClass(userEmail:string){
-    //console.log('ngclass render  '+ userEmail);
+    //console.log('ngclass render  '+ userEmail);  //i.e many times render ?
     if(this.allLoginUsers.indexOf(userEmail)!==-1)
       return 'online';
     return 'offline';
